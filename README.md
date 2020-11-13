@@ -1,6 +1,6 @@
 # Serverless Aurora App with Database Migration
 
-This project shows how to build a fully Serverless backend on AWS and you can handle  database schema migration using [Amazon API Gateway](https://aws.amazon.com/api-gateway/), [AWS Lambda](https://aws.amazon.com/lambda/),[ Amazon Aurora Serverless](https://aws.amazon.com/rds/aurora/serverless/) (MySQL) and Python CDK. 
+This project shows how to build a fully Serverless backend on AWS and how you can approach  database schema migration in [ Amazon Aurora Serverless](https://aws.amazon.com/rds/aurora/serverless/) (MySQL)  using [Amazon API Gateway](https://aws.amazon.com/api-gateway/), [AWS Lambda](https://aws.amazon.com/lambda/), and Python CDK. 
 
 ## How to Run
 
@@ -120,8 +120,8 @@ v3.sql
 
 Custom resource functions are not run on subsequent deploys if no modifications were made to the custom resource. 
 
-You may modify the SQL scripts during development and expect the lambda function to apply the new changes. Currently, this does not work.   My thought why this happens is  similar to what [Tom](https://github.com/tommedema) mentioned [here](https://github.com/serverless/serverless/issues/4483).
+As you develop, you might need to modify your SQL scripts during development and expect the lambda function to apply the new changes during the next deployment. Unfortunately, this does not work as you may have expected.   My thought on this is similar to what [Tom](https://github.com/tommedema) wrote [here](https://github.com/serverless/serverless/issues/4483).
 
 > Cloudformation creates an internal state, and then if the resource is already created once, it won't be created again unless you previously deleted it. If you then change the resource parameters, it will be run again with the Update event.RequestType.
 
-However, there is a workaround suggested in this [thread](https://github.com/serverless/serverless/issues/4483 ) to fix this temporarily .
+However, there is a workaround suggested in this [thread](https://github.com/serverless/serverless/issues/4483 ) to fix this temporarily.
