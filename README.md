@@ -1,8 +1,18 @@
-# Full Application with Serverless Aurora with Database Migration
+# Serverless Aurora App with Database Migration
 
-This project shows how to build a fully Serverless backend and handle database schema migration on AWS (including the SQL database) using [Amazon API Gateway](https://aws.amazon.com/api-gateway/), [AWS Lambda](https://aws.amazon.com/lambda/),[ Amazon Aurora Serverless](https://aws.amazon.com/rds/aurora/serverless/) (MySQL) and Python CDK. 
+This project shows how to build a fully Serverless backend on AWS and you can handle  database schema migration using [Amazon API Gateway](https://aws.amazon.com/api-gateway/), [AWS Lambda](https://aws.amazon.com/lambda/),[ Amazon Aurora Serverless](https://aws.amazon.com/rds/aurora/serverless/) (MySQL) and Python CDK. 
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+## How to Run
+
+1. **Clone the code repository**
+
+```
+git clone git@github.com:abiodunjames/aws-serverless-aurora.git
+```
+
+
+
+2. **Create a virtualenv**
 
 To create the virtualenv it assumes that there is a `python3` (or `python` for Windows) executable in your path with access to the `venv` package. If for any reason the automatic creation of the virtualenv fails, you can create the virtualenv manually.
 
@@ -24,7 +34,7 @@ If you are a Windows platform, you would activate the virtualenv like this:
 % .venv\Scripts\activate.bat
 ```
 
-Once the virtualenv is activated, you can install the required dependencies.
+3. **Once the virtualenv is activated, you can install the required dependencies.**
 
 ```
 $ pip install -r requirements.txt
@@ -38,9 +48,105 @@ $ cdk synth
 
 To add additional dependencies, for example other CDK libraries, just add them to your `setup.py` file and rerun the `pip install -r requirements.txt` command.
 
- Now you deploy the application 
+4. **Now you deploy the application** 
 
 ```
 cdk deploy
 ```
 
+On successful deployment, you can browse the endpoint at:
+```
+curl https://xxxxxx.execute-api.xxxxxx.amazonaws.com/prod/posts 
+```
+
+```
+curl https://hkgpg3z1xd.execute-api.eu-west-1.amazonaws.com/prod/posts
+
+{"statusCode": 200, "body": [[{"longValue": 1}, {"stringValue": "344d117ea9f1"}, {"stringValue": "A serverless blogpost with Aurora"}, {"stringValue": "serverless-aurora"}, {"stringValue": "This is the description of the post"}, {"longValue": 0}, {"isNull": true}, {"isNull": true}]]}%     
+
+```
+##  Solution
+
+![](./docs/aws-serverless-aurora.png)
+
+```
+.
+├── README.md
+├── app.py
+├── aurorastack
+│   ├── __init__.py
+│   ├── api.py
+│   ├── config.py
+│   ├── migration.py
+│   ├── rds.py
+│   └── utils.py
+├── cdk.context.json
+├── cdk.json
+├── docs
+│   └── aws-serverless-aurora.png
+├── functions
+│   ├── __init__.py
+│   ├── get_posts.py
+│   └── utils.py
+├── migration_handler.py
+├── requirements.txt
+├── scripts
+│   └── schema
+├── setup.py
+└── source.bat
+
+```
+
+####  
+
+#### Database Schema Migration 
+
+The code leverages custom resources with a lambda function to run database migration schema after provisioning an aurora instannce.
+
+The SQL scripts are packaged into lambda layer, available to the executing function in the "/opt" directory.
+
+
+#### Config
+
+The `config.py`  contains route definition and how http endpoints map to each lambda function. It's a dictionary object that looks like this:
+
+```python
+routes = {
+    "posts": [
+        {"method": "GET", "function": "get_posts"},
+        {"method": "POST", "function": "create_posts"},
+    ],
+}
+```
+
+The idea behind this is to make the relationship between paths, methods and functions configurable.
+
+#### Functions
+
+Lambda functions are defined in in this directory.  All functions should use `handler` as nme. 
+
+```
+def handler(event, context):
+		.......
+```
+
+#### Scripts
+
+SQL scripts are located in the `scripts/schema` directory.  It contains the schema of your database.  You may version migration scripts. For example:
+
+```
+v1.sql
+v2.sql
+v3.sql
+...
+```
+
+## Known Issues
+
+Custom resource functions are not run on subsequent deploys if no modifications were made to the custom resource. 
+
+You may modify the SQL scripts during development and expect the lambda function to apply the new changes. Currently, this does not work.   My thought why this happens is  similar to what [Tom](https://github.com/tommedema) mentioned [here](https://github.com/serverless/serverless/issues/4483).
+
+> Cloudformation creates an internal state, and then if the resource is already created once, it won't be created again unless you previously deleted it. If you then change the resource parameters, it will be run again with the Update event.RequestType.
+
+However, there is a workaround suggested in this [thread](https://github.com/serverless/serverless/issues/4483 ) to fix this temporarily .
