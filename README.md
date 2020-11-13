@@ -69,7 +69,7 @@ curl https://hkgpg3z1xd.execute-api.eu-west-1.amazonaws.com/prod/posts
 
 ![](./docs/aws-serverless-aurora.png)
 
-```
+
 
 #### Database Schema Migration 
 
