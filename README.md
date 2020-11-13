@@ -70,34 +70,6 @@ curl https://hkgpg3z1xd.execute-api.eu-west-1.amazonaws.com/prod/posts
 ![](./docs/aws-serverless-aurora.png)
 
 ```
-.
-├── README.md
-├── app.py
-├── aurorastack
-│   ├── __init__.py
-│   ├── api.py
-│   ├── config.py
-│   ├── migration.py
-│   ├── rds.py
-│   └── utils.py
-├── cdk.context.json
-├── cdk.json
-├── docs
-│   └── aws-serverless-aurora.png
-├── functions
-│   ├── __init__.py
-│   ├── get_posts.py
-│   └── utils.py
-├── migration_handler.py
-├── requirements.txt
-├── scripts
-│   └── schema
-├── setup.py
-└── source.bat
-
-```
-
-####  
 
 #### Database Schema Migration 
 
