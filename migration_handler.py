@@ -18,6 +18,10 @@ def main(event, context):
     # in the same stack
     physical_id = "SchemaMigrationResource"
 
+    # If this is a Delete event, do nothing. The schema will be destroyed along with the cluster.
+    if event['RequestType'] == 'Delete':
+        cfnresponse.send(event, context, cfnresponse.SUCCESS, {"Response": "Deleted successfully"}, physical_id)
+
     try:
         log.info("Input event: %s", event)
 
