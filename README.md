@@ -140,6 +140,9 @@ v2.sql
 v3.sql
 ...
 ```
+### References
+ * [Using Aurora Serverless and the Data API](https://github.com/aws-samples/aws-aurora-serverless-data-api-sam)
+ * [AWS CDK Examples (Custom Resource)](https://github.com/aws-samples/aws-cdk-examples/tree/master/python/custom-resource)
 
 ## Known Issues
 
